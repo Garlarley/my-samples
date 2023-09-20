@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace MySamples
+﻿namespace MySamples
 {
     [System.Serializable]
     public partial class AbilityBlock : AbilityData
