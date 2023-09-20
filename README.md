@@ -3,11 +3,11 @@ I created this repository to share some samples of code I've written in shipped 
 All the works in my samples are random extractions from a complete full source code. No namespaces, and no library usages are included.
 
 # AI
-It contains my approach to a bot (AI) system that uses goal oriented action planning (GOAP). It simulates very human like behavior and is available in the shipped mobile title Legends of Catopia.
+It contains my approach to a bot (AI) system that uses goal oriented action planning (GOAP). It is part of a bigger system that I've written to simulate human like behavior (bots and taking over disconnecting players) and is available in the shipped mobile title Legends of Catopia.
 # Abilities
-My extendible implementation for an Ability System in a shipped MOBA game. This is a very small overview of the actual structure.
+My extendible implementation for an Ability System in a shipped MOBA game. This is a very small portion of the full structure.
 # Azure Functions
-Some code samples I wrote for our Azure backend (Azure Functions). Functions are triggered via PlayFab.
+Some code samples I wrote for our Azure backend (Azure Functions). This is a random selection from a full azure function setup comprised of 82 functions to manage a title in soft-launch with 100,000 players.
 # Gameplay Mechanics
 Smaller files that serve specific game features. There's honestly not a specific reason I throw files in this folder other than they're smallish, feel mostly gameplay related, and I feel like it.
 # Audio
