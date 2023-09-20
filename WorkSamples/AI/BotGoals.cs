@@ -125,7 +125,7 @@
         /// <summary>
         /// Evaluates whether a bot should runaway or not
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static FP EvaluateRunaway(Frame f, ref BRBotSystem.Filter filter)
         {
             if (f.Unsafe.TryGetPointer<BRMemory>(filter.entity, out var memory) == false || memory->enemy == default) return PRIORITY_NOT_APPLICABLE;
@@ -182,7 +182,7 @@
         /// <summary>
         /// Determine whether or not the bot should run from the death zone
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static FP EvaluateRunFromDeathZone(Frame f, ref BRBotSystem.Filter filter)
         {
             if (GameModeHelper.UsesDeathZone(f) == false) return PRIORITY_NOT_APPLICABLE;
@@ -252,7 +252,7 @@
         /// </summary>
         /// <param name="f"></param>
         /// <param name="filter"></param>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static FP EvaluateDeliverFlag(Frame f, ref BRBotSystem.Filter filter)
         {
             if (f.Has<CarriedFlag>(filter.entity))
@@ -302,7 +302,7 @@
         /// </summary>
         /// <param name="f"></param>
         /// <param name="filter"></param>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static FP EvaluateHillCapture(Frame f, ref BRBotSystem.Filter filter)
         {
             if (f.Unsafe.TryGetPointer<BRMemory>(filter.entity, out var memory) == false) return PRIORITY_NOT_APPLICABLE;
@@ -347,7 +347,7 @@
         /// 4: delivering flags
         /// 5: Payday gold
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static FP EvaluateCollectible(Frame f, ref BRBotSystem.Filter filter)
         {
             if (f.Unsafe.TryGetPointer<BRMemory>(filter.entity, out var memory) == false) return PRIORITY_NOT_APPLICABLE;
@@ -802,10 +802,7 @@
         /// <summary>
         /// Compares two targets and returns which is better to fight
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="e1"></param>
-        /// <param name="e2"></param>
-        /// <returns></returns>
+        /// <returns>Priority</returns>
         public static EntityRef CompareTargets(Frame f, ref BRBotSystem.Filter filter, EntityRef e1, EntityRef e2)
         {
             int p1 = 0;
