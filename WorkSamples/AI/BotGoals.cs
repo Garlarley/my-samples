@@ -48,16 +48,12 @@
         public static FP EvaluateDestroyNexus(Frame f, ref BRBotSystem.Filter filter)
         {
             FP factor = FP._1;
-            //if (f.Global->time > filter.health->lastTimeHitByDirectAbility + FP._10)
-            //{
-            //    factor = FP._10;
-            //}
-            //else 
+            // If we haven't been attacked for a while, focus more on the win condition
             if (f.Global->time > filter.health->lastTimeHitByDirectAbility + FP._5)
             {
                 factor = FP._2;
             }
-
+            // A living nexus exists
             if (f.ComponentCount<SurvivalNexus>() > 0)
             {
                 return PRIORITY_STANDARD * factor;
@@ -129,14 +125,9 @@
         /// <summary>
         /// Evaluates whether a bot should runaway or not
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         /// <returns></returns>
         public static FP EvaluateRunaway(Frame f, ref BRBotSystem.Filter filter)
         {
-            //if (f.RuntimeConfig.gameMode.HasFlag(GameMode.Tutorial)) return PRIORITY_NOT_APPLICABLE;
-
-            //if (filter.bot->goal != BotGoal.DefeatEnemy) return PRIORITY_NOT_APPLICABLE;
             if (f.Unsafe.TryGetPointer<BRMemory>(filter.entity, out var memory) == false || memory->enemy == default) return PRIORITY_NOT_APPLICABLE;
             if (f.Unsafe.TryGetPointer<Health>(memory->enemy, out var enemyHealth) == false) return PRIORITY_NOT_APPLICABLE;
 
@@ -155,7 +146,7 @@
                     if (filter.bot->arsenal.HasFlag(ReasonForUse.RunawayFromTarget)) prio += FP._1;
                 }
             }
-            // check cooldowns (TODO: if we're CD reliant)
+            // check cooldowns (if we're CD reliant)
             if (f.Unsafe.TryGetPointer<AbilityInventory>(filter.entity, out var inventory))
             {
                 var list = inventory->GetActiveAbilities(f);
@@ -191,8 +182,6 @@
         /// <summary>
         /// Determine whether or not the bot should run from the death zone
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         /// <returns></returns>
         public static FP EvaluateRunFromDeathZone(Frame f, ref BRBotSystem.Filter filter)
         {
@@ -208,6 +197,7 @@
                 // are we inside? then GTFO
                 if (pos.X < manager->bounds.Min.X || pos.X > manager->bounds.Max.X || pos.Y < manager->bounds.Min.Y || pos.Y > manager->bounds.Max.Y)
                 {
+                    // special case. We have no better option during this then to get out of the DZ
                     if (filter.bot->goal == BotGoal.RunawayFromEnemy) return PRIORITY_MUST;
                     return PRIORITY_HIGH;
                 }
@@ -247,10 +237,6 @@
                 {
                     return PRIORITY_LOW;
                 }
-                //else if(dist < FP._10)
-                //{
-                //    return PRIORITY_LOW;
-                //}
             }
             return PRIORITY_NOT_APPLICABLE;
         }
@@ -340,6 +326,7 @@
                 }
             }
 
+            // priority based on how convinient it is for us to cap the hill
             if (toCapture != default)
             {
                 memory->closestModeEntity = toCapture;
@@ -358,9 +345,8 @@
         /// 2: Health pickups
         /// 3: Flags
         /// 4: delivering flags
+        /// 5: Payday gold
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         /// <returns></returns>
         public static FP EvaluateCollectible(Frame f, ref BRBotSystem.Filter filter)
         {
@@ -490,7 +476,6 @@
         /// <summary>
         /// Determine minion defeat enemy priority
         /// </summary>
-        /// <returns>Priority</returns>
         public static FP EvaluateDefeatEnemy_Minion(Frame f, ref BRBotSystem.Filter filter)
         {
             EntityRef ourEntity = filter.entity;
@@ -600,8 +585,6 @@
         /// <summary>
         /// Considers whether it's time to give up chasing an enemy
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         public static void EvaluateDroppingEnemy(Frame f, ref BRBotSystem.Filter filter, BRMemory* memory)
         {
             if (memory->enemy == default || f.Unsafe.TryGetPointer<Health>(memory->enemy, out var enemyHealth) == false) return;
@@ -628,13 +611,6 @@
                     memory->enemy = default;
                     return;
                 }
-
-                //// stealth?
-                //if(BotHelper.IsEntityStealthToUs(f, filter.entity, lastTarget))
-                //{
-                //    memory->enemy = default;
-                //    return;
-                //}
             }
         }
         public static FP EvaluateDefeatEnemy_ChampionSurvival(Frame f, ref BRBotSystem.Filter filter)
@@ -682,8 +658,6 @@
 
             EntityRef bestTarget = default;
             EntityRef lastTarget = targets->enemy;
-            // only consider last target if they're alive
-
 
             FP targetDist = FP.UseableMax;
             bool requiresWithinRange = filter.team->team != ProfileHelper.NPC_TEAM || f.RuntimeConfig.gameMode.HasFlag(GameMode.Survival) == false;
