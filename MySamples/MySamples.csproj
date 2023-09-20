@@ -47,6 +47,10 @@
     <Compile Include="Gameplay\Abilities\UsageExample\AbilityReflect.cs" />
     <Compile Include="Gameplay\Abilities\UsageExample\AbilitySpawnMinion.cs" />
     <Compile Include="Gameplay\Abilities\UsageExample\AbilityTeleport.cs" />
+    <Compile Include="Gameplay\AI\BotActions.cs" />
+    <Compile Include="Gameplay\AI\BotBrain.cs" />
+    <Compile Include="Gameplay\AI\BotGoals.cs" />
+    <Compile Include="Gameplay\AI\BotSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
