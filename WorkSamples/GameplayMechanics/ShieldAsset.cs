@@ -27,11 +27,11 @@
         }
 
         /// <summary>
-        /// 
+        /// Adds a shield to an entity
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="owner"></param>
-        /// <param name="shield"></param>
+        /// <param name="f">Current frame</param>
+        /// <param name="owner">The entity to apply the shield to</param>
+        /// <param name="shield">Pointer to the shield</param>
         /// <param name="overrideShieldValue">Override the flat amount with a different value</param>
         /// <param name="additiveValue">Add to the current value of the shield? If false, it will set the value as if there was no shield value before</param>
         public virtual void ApplyShield(Frame f, EntityRef owner, Shield* shield, int overrideShieldValue = 0, bool additiveValue = false)
