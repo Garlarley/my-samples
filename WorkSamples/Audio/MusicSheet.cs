@@ -1,4 +1,6 @@
-﻿namespace MySamples.Audio
+﻿using UnityEngine;
+
+namespace MySamples.Audio
 {
     [System.Serializable]
     public struct MusicClip
@@ -7,14 +9,18 @@
         [InfoBox("0: no loop, -1: infinite looping, n: n count")]
         public int loopCount;
     }
+
     [CreateAssetMenu(fileName = "MusicSheet", menuName = "MD/Music/MusicSheet")]
     public class MusicSheet : ScriptableObject
     {
+        [Tooltip("A music sheet can sequence between multiple clips")]
         public MusicClip[] clips;
+        [Tooltip("How many seconds it takes to fade out this sheet. <= 0 is immediate")]
         public float fadeOutTime = 3;
+        [Tooltip("How many seconds it begins playing this sheet. <= 0 is immediate")]
         public float fadeInTime = 2;
+        [Tooltip("How long before any behaviors take place once this sheet is queued up")]
         public float startDelay = 1;
-        public bool debug;
 
         protected float internalVolume;
         protected int loopCount;
@@ -22,20 +28,9 @@
         protected bool isPlaying;
         protected float lerpPoint;
         protected bool ended;
-        protected MusicClip current
-        {
-            get
-            {
-                return clips[clipIndex];
-            }
-        }
-        protected float volume
-        {
-            get
-            {
-                return internalVolume * LocalSummoner.settings.audio.musicVolume * LocalSummoner.settings.audio.masterVolume * MusicManager.controlledVolume;
-            }
-        }
+        protected float volume => internalVolume * LocalSummoner.settings.audio.musicVolume * LocalSummoner.settings.audio.masterVolume * MusicManager.ControlledVolume;
+        private MusicClip current => (clips != null && clips.Length >= clipIndex ? clips[clipIndex] : default);
+
         public void Initialize()
         {
             internalVolume = 0;
@@ -45,34 +40,36 @@
             lerpPoint = 0;
             ended = false;
         }
+
         protected virtual void OnFirstPlay()
         {
             loopCount = 0;
             lerpPoint = internalVolume;
         }
+
         protected virtual void OnFirstStop()
         {
             lerpPoint = internalVolume;
         }
+
         /// <summary>
         /// Handles the process of playing a sheet
         /// </summary>
-        /// <param name="timeInSheet"></param>
-        /// <param name="source"></param>
         /// <returns>true if sheet play process has completed</returns>
         public virtual bool PlaySheet(float timeInSheet, AudioSource source)
         {
             if (ended) return false;
 
-            if (isPlaying == false)
+            if (!isPlaying)
             {
                 OnFirstPlay();
                 isPlaying = true;
             }
+
             if (source.clip == null) source.clip = current.clip;
+
             if (internalVolume >= 1)
             {
-                // keep updating in-case settings changed
                 source.volume = volume;
                 HandleClipChanging(source);
                 return true;
@@ -86,7 +83,8 @@
             else if (fadeInTime <= 0) internalVolume = 1;
             else internalVolume = Mathf.Lerp(lerpPoint, 1, (timeInSheet - startDelay) / fadeInTime);
             source.volume = volume;
-            if (source.isPlaying == false)
+
+            if (!source.isPlaying)
             {
                 source.Play();
                 OnNewClipStarted();
@@ -97,10 +95,9 @@
         /// <summary>
         /// Handles what happens when we reach the end of a clip
         /// </summary>
-        /// <param name="source"></param>
         protected virtual void HandleClipChanging(AudioSource source)
         {
-            if (source.isPlaying == false)
+            if (!source.isPlaying)
             {
                 if (loopCount < current.loopCount || current.loopCount < 0)
                 {
@@ -127,17 +124,25 @@
                 }
             }
         }
+        /// <summary>
+        /// Triggered once when a new clip is played
+        /// </summary>
         protected virtual void OnNewClipStarted()
         {
             loopCount = 0;
         }
+        /// <summary>
+        /// sheet is queued, but not active
+        /// </summary>
+        /// <param name="timeInSheet"></param>
+        /// <param name="source"></param>
         protected virtual void OnWaitingForDelay(float timeInSheet, AudioSource source)
         {
             if (source.isPlaying) source.Stop();
             internalVolume = 0;
         }
         /// <summary>
-        /// Begin the stop play process
+        /// Is called every frame a sheet is in "STOP" mode
         /// </summary>
         public virtual bool StopSheet(float timeInSheet, AudioSource source)
         {
@@ -146,6 +151,7 @@
                 OnFirstStop();
                 isPlaying = false;
             }
+
             if (fadeOutTime <= 0 || internalVolume <= 0)
             {
                 if (source.isPlaying) source.Pause();
@@ -157,5 +163,6 @@
             clipIndex = 0;
             return internalVolume <= 0;
         }
+
     }
 }
