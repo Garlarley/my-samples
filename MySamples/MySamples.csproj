@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gameplay\Abilities\AbilityData.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityBlock.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

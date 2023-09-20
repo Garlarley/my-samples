@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace MySamples
 {
     [Flags]
@@ -80,39 +82,12 @@ namespace MySamples
         SpawnOnAbilityEndIfDealtDamage = 16,
     }
 
-    public enum AbilityCondition
-    {
-        Grounded,
-        Sprinting,
-        BeingAttacked,
-        BelowHealth75,
-        BelowHealth50,
-        BelowHealth25,
-        InventoryTempBool,
-        Stealth,
-        TargetIsImmobile,
-        TargetIsStunned,
-        TargetCannotDodge,
-        Mounted,
-        IsUsingAnotherAbility,
-        IsImmune,
-        TargetIsKnockedBack,
-        IsUnderEffect,
-    }
     public enum AbilityButtonType : byte
     {
         Standard = 0,
         Aimable = 1,
         Charged = 2,
         Hold = 3,
-    }
-
-    [System.Serializable]
-    public struct Condition
-    {
-        public AbilityCondition condition;
-        public bool isTrue;
-        public int intVal;
     }
     public enum DamageShape : byte
     {
