@@ -51,6 +51,9 @@
     <Compile Include="AI\BotBrain.cs" />
     <Compile Include="AI\BotGoals.cs" />
     <Compile Include="AI\BotSystem.cs" />
+    <Compile Include="AzureFunctions\PurchaseDailyDeal.cs" />
+    <Compile Include="AzureFunctions\TribeCreate.cs" />
+    <Compile Include="AzureFunctions\TribeTools.cs" />
     <Compile Include="GameplayMechanics\ShieldAsset.cs" />
   </ItemGroup>
   <ItemGroup />
