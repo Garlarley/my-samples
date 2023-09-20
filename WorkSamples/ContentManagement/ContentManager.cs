@@ -54,9 +54,6 @@
 
             public static void CheckForContentUpdate()
             {
-#if UNITY_EDITOR
-            Debug.Log("Content: Checking for content update...");
-#endif
                 Addressables.CheckForCatalogUpdates().Completed += CheckForCatalogUpdates_Completed;
             }
 
@@ -66,22 +63,13 @@
             /// <param name="obj"></param>
             private static void CheckForCatalogUpdates_Completed(AsyncOperationHandle<List<string>> obj)
             {
-#if UNITY_EDITOR
-            Debug.Log("Content: Check complete.");
-#endif
                 // -- need to perform an update
                 if (obj.Result != null && obj.Result.Count > 0)
                 {
-#if UNITY_EDITOR
-                Debug.Log("Content: Updating catalog.");
-#endif
                     Addressables.UpdateCatalogs(obj.Result).Completed += UpdateCatalogs_Completed;
                 }
                 else
                 {
-#if UNITY_EDITOR
-                Debug.Log("Content: No need for catalog update.");
-#endif
                     if (onNextContentUpdateComplete != null)
                     {
                         onNextContentUpdateComplete.Invoke();
@@ -97,9 +85,6 @@
             /// <param name="obj"></param>
             private static void UpdateCatalogs_Completed(AsyncOperationHandle<List<IResourceLocator>> obj)
             {
-#if UNITY_EDITOR
-            Debug.Log("Content: Catalog update complete.");
-#endif
                 if (onNextContentUpdateComplete != null)
                 {
                     onNextContentUpdateComplete.Invoke();
@@ -157,12 +142,6 @@
             {
                 foreach (var handle in handles)
                 {
-                    if (!handle.IsDone)
-                    {
-#if UNITY_EDITOR
-                    Debug.LogWarning($"AsyncOperationHandle not completed yet. Releasing anyway!");
-#endif
-                    }
                     while (handle.IsValid())
                     {
                         Addressables.ResourceManager.Release(handle);
