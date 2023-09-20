@@ -123,13 +123,6 @@
                 var dictionaryMember = resourceManagerType.GetField("m_AssetOperationCache", BindingFlags.NonPublic | BindingFlags.Instance);
                 var dictionary = dictionaryMember.GetValue(Addressables.ResourceManager) as IDictionary;
 
-                object loadingBG = null;
-                if (LoadingUI.IsScreenVisible() && LoadingUI.Instance.dynamicBG != null && LoadingUI.Instance.dynamicBG.currentSprite != null
-                                && LoadingUI.Instance.dynamicBG.currentSprite.RuntimeKeyIsValid() && LoadingUI.Instance.dynamicBG.currentSprite.OperationHandle.IsValid() && LoadingUI.Instance.dynamicBG.currentSprite.OperationHandle.IsDone)
-                {
-                    loadingBG = LoadingUI.Instance.dynamicBG.currentSprite.OperationHandle.Result;
-                }
-
                 foreach (var asyncOperationInterface in dictionary.Values)
                 {
                     if (asyncOperationInterface == null)
