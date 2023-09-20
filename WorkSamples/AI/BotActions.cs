@@ -29,7 +29,7 @@
         }
 
         /// <summary>
-        /// Select the goal that is best suited for this bot
+        /// A target-aware movement
         /// </summary>
         /// <param name="f"></param>
         /// <param name="filter"></param>
@@ -51,10 +51,6 @@
         /// <summary>
         /// Generic move to a point funciton
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
-        /// <param name="position"></param>
-        /// <param name="stopDist"></param>
         /// <param name="allowMiddlePoints">Allows inserting curved middle points to give more randomness to pathing. Points are only added between long stretches</param>
         /// <returns></returns>
         public static bool MoveToPosition(Frame f, ref BRBotSystem.Filter filter, FPVector3 position, FP stopDist, bool allowMiddlePoints = false)
@@ -104,8 +100,6 @@
         /// <summary>
         /// Try to attack enemy
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         /// <returns>Whether we successfully ATTEMPTED to attack an enemy</returns>
         public static bool AttackEnemy(Frame f, ref BRBotSystem.Filter filter)
         {
@@ -124,7 +118,6 @@
                 case BotCategory.Champion:
                     if (f.TryGet<BRMemory>(filter.entity, out var ctargets) && ctargets.enemy != default)
                     {
-                        //bool debug = f.TryGet<BrushUser>(filter.entity, out var brushUser) && brushUser.IsInBrush();
                         if (BotHelper.ActivateBestAbilityOption(f, filter.entity, ctargets.enemy, ReasonForUse.KillTarget, true))
                         {
                             return true;
