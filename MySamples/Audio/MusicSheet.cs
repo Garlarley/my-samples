@@ -1,4 +1,4 @@
-﻿namespace WorkSamples.Audio
+﻿namespace MySamples.Audio
 {
     [System.Serializable]
     public struct MusicClip
