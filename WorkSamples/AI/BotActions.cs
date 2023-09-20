@@ -2,6 +2,7 @@
 {
     internal unsafe class BotActions
     {
+        #region Simple Movements
         public static bool ExploreWorld(Frame f, ref BRBotSystem.Filter filter)
         {
             return MoveToPosition(f, ref filter, filter.bot->destination.XOY, FP._0_75, true);
@@ -27,12 +28,11 @@
         {
             return MoveToPosition(f, ref filter, filter.bot->destination.XOY, FP._5, true);
         }
+        #endregion
 
         /// <summary>
         /// A target-aware movement
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         public static bool MoveToTarget(Frame f, ref BRBotSystem.Filter filter)
         {
             if (filter.bot->target != default && f.Unsafe.TryGetPointer<Transform2D>(filter.bot->target, out var targetTransform))
