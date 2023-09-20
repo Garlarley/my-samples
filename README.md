@@ -8,6 +8,7 @@ It contains my approach to a bot (AI) system that uses goal oriented action plan
 My extendible implementation for an Ability System in a shipped MOBA game. This is a very small portion of the full structure.
 # Azure Functions
 Some code samples I wrote for our Azure backend (Azure Functions). This is a random selection from a full azure function setup comprised of 82 functions to manage a title in soft-launch with 100,000 players.
+The reason to have an Azure server code outside of the game itself is to have certain logic (such as purchasing items) not be accessible by the client device for security and validation.
 # Gameplay Mechanics
 Smaller files that serve specific game features. There's honestly not a specific reason I throw files in this folder other than they're smallish, feel mostly gameplay related, and I feel like it.
 # Audio
