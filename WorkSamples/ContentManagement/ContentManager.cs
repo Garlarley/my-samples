@@ -49,8 +49,8 @@
     {
         public static class ContentManager
         {
-            public static UnityEngine.Events.UnityAction onNextContentUpdateComplete;
-            public static UnityEngine.Events.UnityAction onAnyContentUpdateComplete;
+            public static Events.UnityAction onNextContentUpdateComplete;
+            public static Events.UnityAction onAnyContentUpdateComplete;
 
             public static void CheckForContentUpdate()
             {
@@ -64,7 +64,7 @@
             /// Result of checking if content catalogues need to be updated
             /// </summary>
             /// <param name="obj"></param>
-            private static void CheckForCatalogUpdates_Completed(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<List<string>> obj)
+            private static void CheckForCatalogUpdates_Completed(AsyncOperationHandle<List<string>> obj)
             {
 #if UNITY_EDITOR
             Debug.Log("Content: Check complete.");
@@ -95,7 +95,7 @@
             /// Result of attempting to update content 
             /// </summary>
             /// <param name="obj"></param>
-            private static void UpdateCatalogs_Completed(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<List<UnityEngine.AddressableAssets.ResourceLocators.IResourceLocator>> obj)
+            private static void UpdateCatalogs_Completed(AsyncOperationHandle<List<IResourceLocator>> obj)
             {
 #if UNITY_EDITOR
             Debug.Log("Content: Catalog update complete.");
@@ -114,9 +114,6 @@
             }
             public static List<AsyncOperationHandle> GetAllAsyncOperationHandles(bool unloadMDQMaps = true)
             {
-                // Workaround for problems:
-                // https://forum.unity.com/threads/how-to-unload-everything-currently-loaded-by-addressables.1121998/
-
                 var handles = new List<AsyncOperationHandle>();
 
                 var resourceManagerType = Addressables.ResourceManager.GetType();
@@ -139,7 +136,7 @@
                         var t = x.Result.GetType();
                         #region CUSTOM TYPES
                         // ---------- CUSTOM EXCEPTIONS, DO NOT RE-USE
-                        if (t == typeof(UnityEngine.GameObject) || t == typeof(MD.Localization.Library.LibraryData) || t == typeof(UnityEngine.Texture2D) || t == typeof(UnityEngine.AudioClip)
+                        if (t == typeof(GameObject) || t == typeof(MD.Localization.Library.LibraryData) || t == typeof(Texture2D) || t == typeof(AudioClip)
                             || t == typeof(MD.Icons.IconLibrary) || (unloadMDQMaps && t == typeof(MD.Content.MDQMap)) || t == typeof(MD.Content.VisualDataContainer))
                         {
                             add = true;
