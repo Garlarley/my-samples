@@ -7,4 +7,4 @@ It contains my approach to a bot (AI) system that uses goal oriented action plan
 # Abilities
 My extendible implementation for an Ability System in a shipped MOBA game. This is a very small overview of the actual structure.
 # Gameplay Mechanics
-Smaller files that serve specific game features. There's honestly not a specific reason I throw files in this folder other than they're smallish and I feel like it.
+Smaller files that serve specific game features. There's honestly not a specific reason I throw files in this folder other than they're smallish, feel mostly gameplay related, and I feel like it.
