@@ -51,9 +51,13 @@
     <Compile Include="AI\BotBrain.cs" />
     <Compile Include="AI\BotGoals.cs" />
     <Compile Include="AI\BotSystem.cs" />
+    <Compile Include="Audio\MusicManager.cs" />
+    <Compile Include="Audio\MusicSheet.cs" />
     <Compile Include="AzureFunctions\PurchaseDailyDeal.cs" />
     <Compile Include="AzureFunctions\TribeCreate.cs" />
     <Compile Include="AzureFunctions\TribeTools.cs" />
+    <Compile Include="ContentManagement\AssetPreloader.cs" />
+    <Compile Include="ContentManagement\ContentManager.cs" />
     <Compile Include="GameplayMechanics\ShieldAsset.cs" />
   </ItemGroup>
   <ItemGroup />
