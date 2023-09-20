@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace MySamples
+﻿namespace MySamples
 {
     [Flags]
     public enum AbilityBotUsage : UInt32

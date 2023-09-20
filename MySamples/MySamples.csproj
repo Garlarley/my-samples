@@ -38,6 +38,15 @@
   <ItemGroup>
     <Compile Include="Gameplay\Abilities\AbilityData.cs" />
     <Compile Include="Gameplay\Abilities\UsageExample\AbilityBlock.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityFanProjectile.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityGivesShield.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityGrappel.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityModifiesMount.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityModifiesStealth.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityProjectile.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityReflect.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilitySpawnMinion.cs" />
+    <Compile Include="Gameplay\Abilities\UsageExample\AbilityTeleport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

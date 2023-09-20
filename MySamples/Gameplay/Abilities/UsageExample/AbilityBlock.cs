@@ -4,9 +4,13 @@
     public partial class AbilityBlock : AbilityData
     {
         [Header("Block")]
+        [Tooltip("How much of the damage received do we block? 1 = 100%")]
         public FP blockPercentage = FP._1;
+        [Tooltip("Are we immune to all negative effects such as CC during this?")]
         public QBoolean immuneToHarmfulEffects = false;
+        [Tooltip("Does this alter our movement speed?")]
         public FP movementSpeedChange = FP._0;
+        [Tooltip("Does it block projectiles?")]
         public QBoolean blockProjectiles = true;
 
         // StartAbility method called when the ability is activated
