@@ -303,8 +303,6 @@
         /// <summary>
         /// cooldown that considers any influences
         /// </summary>
-        /// <param name="f"></param>
-        /// <returns></returns>
         public virtual unsafe FP GetCooldown(Frame f, EntityRef owner)
         {
             // practice view, we want players to be able to keep using abilities
@@ -381,9 +379,6 @@
         /// <summary>
         /// For display in the character UI only, never using this in a quantum simulation
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="owner"></param>
-        /// <returns></returns>
         public virtual unsafe FP GetCharacterUICooldown(Frame f, EntityRef owner)
         {
             if (owner != null && f.Unsafe.TryGetPointer<CharacterProfile>(owner, out var profile))
@@ -549,9 +544,6 @@
         /// <summary>
         /// Determines whether or not the ability will break brush stealth
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="owner"></param>
-        /// <param name="ability"></param>
         protected virtual unsafe void ConsiderBreakingBrushStealth(Frame f, EntityRef owner, Ability* ability)
         {
             if (specialBehavior.HasFlag(AbilitySpecialBehavior.DoesntBreakBrushStealth)) return;
@@ -939,10 +931,8 @@
                         if (abilityInput == 1 && buttonType == AbilityButtonType.Standard && input->MovementDirection != default)
                         {
                             controller->RotateController(f, input->MovementDirection);
-                            //return;
                         }
                         // we still want to auto aim
-                        //else
                         if (specialBehavior.HasFlag(AbilitySpecialBehavior.NoAutoAim) == false)
                         {
                             var aim = AutoAim(f, ability, owner, transform, controller, inputDir);
@@ -973,7 +963,6 @@
                 bool invertDirection = false;
                 // we want to reverse direction to make it make sense to player
                 // when they use directional button to go in a direction, they don't go in the opposite
-                //if (motion != null && motion.Length > 0 && motion[0].force.X < 0) invertDirection = true;
                 if (faceWrongDirection) invertDirection = !invertDirection;
 
                 controller->RotateController(f, ability->abilityDirection * (invertDirection ? -FP._1 : FP._1));
@@ -1070,7 +1059,6 @@
                     EntityRef target = AIHelper.GetTarget(f, ability->owner);
                     if (target != default && f.Unsafe.TryGetPointer<Transform2D>(target, out var targetTransform) && f.Unsafe.TryGetPointer<CharacterController>(target, out var targetController))
                     {
-                        //bool targetLeaving = false;
                         // we're on the left of our target
                         bool targetLeaving = IsFacingAway(transform->Position, targetController->state.direction, targetTransform->Position);
 
@@ -1116,7 +1104,7 @@
                         {
                             playable->botData.botInput.MovementDirection = (targetPos - pt->Position).Normalized;
                         }
-                        else playable->botData.botInput.MovementDirection = (targetPos - transform->Position).Normalized; //((targetTransform->Position + FPVector2.Up) - (transform->Position + FPVector2.Up)).Normalized;
+                        else playable->botData.botInput.MovementDirection = (targetPos - transform->Position).Normalized;
                     }
                 }
 
@@ -1200,7 +1188,7 @@
                     controller->state.cannotTurn = false;
                 }
 
-                if (motion.Length > 0) //&& f.Global->time - controller->parameters.hammockHitTime > FP._0_50)
+                if (motion.Length > 0)
                 {
                     controller->parameters.abilityMotion = FPVector2.Zero;
                 }
@@ -1337,7 +1325,6 @@
         /// <summary>
         /// Brings to life a motion controller
         /// </summary>
-        /// <param name="f"></param>
         public virtual unsafe void MaterializeMotion(Frame f, EntityRef entity, MotionData motionData, Ability* ability, FP distanceOverride = default)
         {
             if (motionData == null || entity == null)
@@ -1365,7 +1352,6 @@
                     motion->force.X = FPMath.Lerp(FP._5, motion->force.X, ability->abilityDirection.Magnitude);
                 }
 
-                //motion->stopDistance = 1 + FP._0_25;
                 motion->ResidualForce = motionData.residualPercentage;
                 motion->motionFlags = motionData.motionFlags;
                 motion->abilityId = abilityId;
@@ -1540,8 +1526,7 @@
                 {
                     if (max > damageReach) max = damageReach;
                     if (max <= FP._0) return false;
-                }//return false;
-                //Log.Info($"{f.Number}: View to {target} who is at position {targetTransform->Position} is not obstructed from {transform->Position}");
+                }
             }
 
             if (min == FP._0) min = -FP._1;
@@ -1668,9 +1653,6 @@
         /// <summary>
         /// We've hit something with out projectile
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="projectileEntity"></param>
-        /// <param name="hitTarget"></param>
         public virtual unsafe void OnProjectileEvent(Frame f, Projectile* projectile, EntityRef hitTarget, Ability* ability, FPVector2 hitPoint, ProjectileEventType type, bool whileAbilityIsActive)
         {
 
@@ -1678,21 +1660,20 @@
         /// <summary>
         /// If ability is not default, then it is active
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="entity"></param>
-        /// <param name="collector"></param>
-        /// <param name="collectible"></param>
-        /// <param name="ability"></param>
         public virtual unsafe void OnCollectedCollectible(Frame f, EntityRef entity, EntityRef collector, Collectible* collectible, Ability* ability)
         {
 
         }
-
+        /// <summary>
+        /// Killed or assisted in killed an entity
+        /// </summary>
         public virtual unsafe void OnTakedown(Frame f, EntityRef ourEntity, EntityRef deadEntity, EntityRef killer, bool isKiller, Ability* ability)
         {
 
         }
-
+        /// <summary>
+        /// We were killed this frame
+        /// </summary>
         public virtual unsafe void OnKilled(Frame f, EntityRef ourEntity, EntityRef killer, bool isSuicide, Ability* ability)
         {
 
