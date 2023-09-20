@@ -1,6 +1,4 @@
-﻿//#define DEBUG_GOALS
-
-namespace MySamples
+﻿namespace MySamples
 {
     internal unsafe class BotBrain
     {
@@ -91,11 +89,6 @@ namespace MySamples
                         }
                         break;
                     }
-                    //else if(f.RuntimeConfig.gameMode.HasFlag(GameMode.Tutorial))
-                    //{
-                    //    filter.bot->goals = BotGoal.DefeatEnemy |  BotGoal.RunawayFromEnemy;
-                    //    break;
-                    //}
                     if (f.RuntimeConfig.gameMode.HasFlag(GameMode.Tutorial))
                     {
                         filter.bot->goals = BotGoal.DefeatEnemy | BotGoal.ExploreWorld | BotGoal.GrabCollectible | BotGoal.StayInBrush;
@@ -127,7 +120,7 @@ namespace MySamples
                     break;
             }
             // setup their arsenal -- This allows us to know right away if we should even attempt to use
-            // a type of ability
+            // a type of ability. This added to optimize how quickly bots can decide to use an ability. Removing the need to iterate on their inventory when deciding
             if (f.Unsafe.TryGetPointer<AbilityInventory>(filter.entity, out var inventory))
             {
                 var abilities = inventory->GetAbilities(f);
@@ -265,6 +258,7 @@ namespace MySamples
 
         /// <summary>
         /// Select the goal that is best suited for this bot
+        /// THE ORDER MATTERS in cases where the goal has equal value. So be mindful of that when editing.
         /// </summary>
         /// <param name="f"></param>
         /// <param name="filter"></param>
@@ -273,20 +267,12 @@ namespace MySamples
             BotGoal goal = BotGoal.None;
             BotGoal lastGoal = filter.bot->goal;
             FP prio = FP._0;
-#if DEBUG_GOALS
-            Log.Info(f.Number+"|"+ filter.entity + " -------------------------------");
-#endif
+
             if (filter.bot->goals.HasFlag(BotGoal.AvoidDeathZone))
             {
                 FP p = BRBotGoals.EvaluateRunFromDeathZone(f, ref filter);
-#if DEBUG_GOALS
-                if(p != default) Log.Info("AvoidDeathZone: " + p);
-#endif
                 if (p > prio)
                 {
-#if DEBUG_GOALS
-                    Log.Info("Selecting: AvoidDeathZone");
-#endif
                     goal = BotGoal.AvoidDeathZone;
                     prio = p;
                 }
@@ -295,14 +281,8 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.FollowOwner))
             {
                 FP p = BRBotGoals.EvaluateFollowOwner(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info("FollowOwner: " + p);
-#endif
                 if (p > prio)
                 {
-#if DEBUG_GOALS
-                    Log.Info("Selecting: FollowOwner");
-#endif
                     goal = BotGoal.FollowOwner;
                     prio = p;
                 }
@@ -311,97 +291,63 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.StayInBrush))
             {
                 FP p = BRBotGoals.EvaluateStayInBrush(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"EvaluateStayInBrush: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.StayInBrush;
                     prio = p;
-#if DEBUG_GOALS
-                    Log.Info("Staying in brush");
-#endif
                 }
             }
 
             if (filter.bot->goals.HasFlag(BotGoal.GrabCollectible))
             {
                 FP p = BRBotGoals.EvaluateCollectible(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"GrabCollectible: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.GrabCollectible;
                     prio = p;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: Grab collectible");
-#endif
                 }
             }
 
             if (filter.bot->goals.HasFlag(BotGoal.RevivePlayer))
             {
                 FP p = BRBotGoals.EvaluateRevivePlayerSurvival(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"RevivePlayer: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.RevivePlayer;
                     prio = p;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: RevivePlayer");
-#endif
                 }
             }
 
             if (filter.bot->goals.HasFlag(BotGoal.DefeatEnemy))
             {
                 FP p = BRBotGoals.EvaluateDefeatEnemy(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info("DefeatEnemy: " + p);
-#endif
                 if (p > prio)
                 {
-#if DEBUG_GOALS
-                    Log.Info("Selecting: DefeatEnemy. It is higher than (" + prio + ") which is (" + goal + ")");
-#endif
                     goal = BotGoal.DefeatEnemy;
                     prio = p;
                 }
             }
 
+
+            // ------------------------- Game mode specific order here
+            // Survival
             if (filter.bot->goals.HasFlag(BotGoal.DestroyNexus))
             {
                 FP p = BRBotGoals.EvaluateDestroyNexus(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info("DestroyNexus: " + p);
-#endif
                 if (p > prio)
                 {
-#if DEBUG_GOALS
-                    Log.Info("Selecting: DestroyNexus. It is higher than (" + prio + ") which is (" + goal + ")");
-#endif
                     goal = BotGoal.DestroyNexus;
                     prio = p;
                 }
             }
 
-            // ------------------------- Game mode specific order here
             // CTF
             if (filter.bot->goals.HasFlag(BotGoal.DeliverFlag))
             {
                 FP p = BRBotGoals.EvaluateDeliverFlag(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"DeliverFlag: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.DeliverFlag;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: DeliverFlag");
-#endif
                     prio = p;
                 }
             }
@@ -410,15 +356,9 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.StayInHill))
             {
                 FP p = BRBotGoals.EvaluateHillCapture(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"StayInHill: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.StayInHill;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: StayInHill");
-#endif
                     prio = p;
                 }
             }
@@ -427,15 +367,9 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.GoToATM))
             {
                 FP p = BRBotGoals.EvaluateGoToATM(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"GoToATM: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.GoToATM;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: GoToATM");
-#endif
                     prio = p;
                 }
             }
@@ -444,16 +378,10 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.RunawayFromEnemy))
             {
                 FP p = BRBotGoals.EvaluateRunaway(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info($"RunawayFromEnemy: {p}");
-#endif
                 if (p > prio)
                 {
                     goal = BotGoal.RunawayFromEnemy;
                     prio = p;
-#if DEBUG_GOALS
-                    Log.Info("Selecting: RunawayFromEnemy");
-#endif
                 }
             }
 
@@ -461,24 +389,12 @@ namespace MySamples
             if (filter.bot->goals.HasFlag(BotGoal.ExploreWorld))
             {
                 FP p = BRBotGoals.EvaluateExploreWorld(f, ref filter);
-#if DEBUG_GOALS
-                if (p != default) Log.Info("ExploreWorld: " + p);
-#endif
                 if (p > prio)
                 {
-#if DEBUG_GOALS
-                    Log.Info("Selecting: ExploreWorld");
-#endif
                     goal = BotGoal.ExploreWorld;
                     prio = p;
                 }
             }
-#if DEBUG_GOALS
-            if(lastGoal != goal)
-            {
-                Log.Warn("---------------------- NEW GOAL:" + goal + " ----------------------");
-            }
-#endif
             // process initial setup for the goal
             InitializeGoal(f, ref filter, goal, lastGoal == goal);
 
@@ -632,7 +548,6 @@ namespace MySamples
                 if (health->currentValue <= 0)
                 {
                     // we need to move on from them
-                    //if (entity == filter.bot->target) filter.bot->forceRepath = true;
                     continue;
                 }
 
@@ -706,7 +621,6 @@ namespace MySamples
         public static FPVector2 GetMidPoint(Frame f, ref BRBotSystem.Filter filter, Transform2D* ct)
         {
             FPVector2 midPoint = (ct->Position + filter.transform->Position) / 2;
-            //Log.Info("initial: " + midPoint);
             FPVector2 dir = (ct->Position - filter.transform->Position).Normalized;
             dir = FPVector2.Rotate(dir, FP.Rad_90);
             //Log.Info($"Dir: {dir}");
@@ -940,9 +854,9 @@ namespace MySamples
                 }
             }
 
-            if (closest != default) //&& FPVector2.Distance(closest->Position, filter.transform->Position) < acceptableDist)
+            if (closest != default)
             {
-                filter.bot->destination = closest->Position + new FPVector2(f.RNG->Next(-FP._5, FP._5), f.RNG->Next(-FP._5, FP._5));// MovePositionToClosestNavmeshSpot(f, closest->Position, closest->Up, true);
+                filter.bot->destination = closest->Position + new FPVector2(f.RNG->Next(-FP._5, FP._5), f.RNG->Next(-FP._5, FP._5));
                 AdjustDestinationToBeOnNavmesh(f, ref filter);
                 filter.bot->lastTimeGoalInitialized = f.Global->time;
                 return true;
@@ -978,11 +892,6 @@ namespace MySamples
         /// <summary>
         /// Returns a random position close to our given position that is also on the navmesh
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
-        /// <param name="closeTo"></param>
-        /// <param name="radius"></param>
-        /// <param name="result"></param>
         /// <returns></returns>
         public static bool GetRandomPositionOnNavmesh(Frame f, NavMeshPathfinder* navigator, FPVector2 closeTo, FP radius, out FPVector2 result)
         {
@@ -1006,7 +915,6 @@ namespace MySamples
             directionToSearch = directionToSearch.Normalized;
             if (f.Map.NavMeshes != null && f.Map.NavMeshes.Count > 0)
             {
-                //f.Map.NavMeshes["navmesh"].Find
                 for (int i = 0; i < 10; i++)
                 {
                     if (f.Map.NavMeshes["navmesh"].Contains(position.XOY, default))
@@ -1039,7 +947,6 @@ namespace MySamples
             FPVector2 initial = position;
             if (f.Map.NavMeshes != null && f.Map.NavMeshes.Count > 0)
             {
-                //f.Map.NavMeshes["navmesh"].Find
                 for (int i = 0; i < 2; i++)
                 {
                     if (f.Map.NavMeshes["navmesh"].Contains(position.XOY, default))
@@ -1100,8 +1007,6 @@ namespace MySamples
         /// <summary>
         /// Monitor secondary ability usage
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="filter"></param>
         public static void MonitorAuxiliarAbilityUsage(Frame f, ref BRBotSystem.Filter filter)
         {
             if (filter.bot->goal == BotGoal.RunawayFromEnemy)
@@ -1147,33 +1052,6 @@ namespace MySamples
 
             // is there an incoming projectile?
 
-            // nearby ally needs help?
-            /*
-            for (int i = 0; i < filter.world->players.Length; i++)
-            {
-                if (filter.world->players[i].affiliation != BotWorldCharacterAffiliation.Ally) continue;
-                if (filter.world->players[i].distance > 12) continue;
-                if (filter.world->players[i].entity == filter.entity) continue;
-
-                if (filter.world->players[i].health <= FP._0_75 && filter.world->players[i].health > FP._0)
-                {
-                    if (BotHelper.ActivateBestAbilityOption(f, filter.entity, default, ReasonForUse.HeallAlly, true))
-                    {
-                        filter.world->Emote(f, EmoteOccasion.HelpedAlly);
-                        return;
-                    }
-                }
-                if (f.Unsafe.TryGetPointer<CharacterController>(filter.world->players[i].entity, out var controller) && controller->IsInCombat(f))
-                {
-                    if (BotHelper.ActivateBestAbilityOption(f, filter.entity, default, ReasonForUse.AssistAllyInCombat, true))
-                    {
-                        filter.world->Emote(f, EmoteOccasion.HelpedAlly);
-                        return;
-                    }
-                }
-            }
-            */
-
             // chasing enemy? / running toward objective?
             if (filter.bot->goal == BotGoal.DefeatEnemy && memory->enemy != default && f.Has<Playable>(memory->enemy))
             {
@@ -1193,23 +1071,6 @@ namespace MySamples
                     return;
                 }
             }
-            // if we have any ability that can hit a target in our range, use it regardless of what our current goal / context is
-            /*
-            if (filter.world->entities.vase != default && filter.world->distances.vase < 4)
-            {
-                if (BotHelper.ActivateBestAbilityOption(f, filter.entity, filter.world->entities.vase, ReasonForUse.KillTarget, true))
-                {
-                    return;
-                }
-            }
-            if (filter.world->entities.mouse != default && filter.world->distances.mouse < 4)
-            {
-                if (BotHelper.ActivateBestAbilityOption(f, filter.entity, filter.world->entities.mouse, ReasonForUse.KillTarget, true))
-                {
-                    return;
-                }
-            }
-            */
             if (memory->enemy != default && filter.bot->goal != BotGoal.DefeatEnemy)
             {
                 if (BotHelper.ActivateBestAbilityOption(f, filter.entity, default, ReasonForUse.RunawayFromTarget, true) || BotHelper.ActivateBestAbilityOption(f, filter.entity, memory->enemy, ReasonForUse.CCTarget, true))
