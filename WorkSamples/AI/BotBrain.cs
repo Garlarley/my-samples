@@ -68,7 +68,7 @@
                     filter.bot->goals = BotGoal.FollowOwner | BotGoal.DefeatEnemy;
                     break;
                 case BotCategory.Champion:
-                    filter.bot->isPussy = f.RNG->Next() < FP._0_50;
+                    filter.bot->isCoward = f.RNG->Next() < FP._0_50;
 
                     if (f.AddOrGet<BRMemory>(filter.entity, out var memory))
                     {
