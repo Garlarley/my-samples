@@ -131,7 +131,7 @@
             if (f.Unsafe.TryGetPointer<BRMemory>(filter.entity, out var memory) == false || memory->enemy == default) return PRIORITY_NOT_APPLICABLE;
             if (f.Unsafe.TryGetPointer<Health>(memory->enemy, out var enemyHealth) == false) return PRIORITY_NOT_APPLICABLE;
 
-            if(filter.bot->isPussy && filter.health->CurrentPercentage < FP._0_10 + FP._0_05 && enemyHealth->CurrentPercentage > FP._0_25)
+            if(filter.bot->isCoward && filter.health->CurrentPercentage < FP._0_10 + FP._0_05 && enemyHealth->CurrentPercentage > FP._0_25)
             {
                     return PRIORITY_MUST * (FP._1 - FP._0_10);
             }
