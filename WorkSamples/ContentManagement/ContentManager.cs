@@ -113,26 +113,7 @@
                     var handle = typeof(AsyncOperationHandle).InvokeMember(nameof(AsyncOperationHandle),
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.CreateInstance,
                         null, null, new object[] { asyncOperationInterface });
-                    var x = (AsyncOperationHandle)handle;
-                    bool add = false;
-
-                    if (x.Result != null)
-                    {
-                        var t = x.Result.GetType();
-                        #region CUSTOM TYPES
-                        // ---------- CUSTOM EXCEPTIONS, DO NOT RE-USE
-                        if (t == typeof(GameObject) || t == typeof(MD.Localization.Library.LibraryData) || t == typeof(Texture2D) || t == typeof(AudioClip)
-                            || t == typeof(MD.Icons.IconLibrary) || (unloadMDQMaps && t == typeof(MD.Content.MDQMap)) || t == typeof(MD.Content.VisualDataContainer))
-                        {
-                            add = true;
-                        }
-                        // -------------------------------------------
-                        #endregion
-                    }
-                    if (add)
-                    {
-                        handles.Add(x);
-                    }
+                    handles.Add((AsyncOperationHandle)handle);
                 }
 
                 return handles;
